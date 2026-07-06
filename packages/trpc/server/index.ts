@@ -1,18 +1,9 @@
 import { publicProcedure, router } from "./trpc";
 
-import { healthRouter } from "./routes/health/route";
-import {email, z} from "zod"
+import { authRouter } from "./routes/auth/route";
 
 export const serverRouter = router({
-  health: healthRouter,
-  chaiCode : publicProcedure
-  .input(z.object({email : z.string()}))
-  .output(z.object({message : z.string()}))
-  .query(async({input}) => {
-    return {
-      message : `Hello Mr ${input.email}`
-    }
-  })
+  auth : authRouter
 });
 
 export { createContext } from "./context";
