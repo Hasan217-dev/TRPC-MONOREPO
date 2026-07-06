@@ -11,6 +11,7 @@ import {
   FieldSeparator,
 } from "~/components/ui/field"
 import { Input } from "~/components/ui/input"
+import { trpc } from "~/trpc/client"
 
 type SignupFormValues = {
   name: string
@@ -19,10 +20,9 @@ type SignupFormValues = {
   confirmPassword: string
 }
 
-export function SignupForm({
-  className,
-  ...props
-}: React.ComponentProps<"form">) {
+export function SignupForm({ className, ...props }: React.ComponentProps<"form">) {
+  const { mutateAsync: createUserWithEmailAndPasswordAsync } =
+    trpc.auth.createUserWithEmailAndPassword.useMutation()
   const {
     register,
     handleSubmit,
@@ -32,9 +32,16 @@ export function SignupForm({
 
   const password = watch("password")
 
-  const onSubmit = (data: SignupFormValues) => {
+  const onSubmit = async (data: SignupFormValues) => {
     console.log("Form values:", data)
+    const { id } = await createUserWithEmailAndPasswordAsync({
+      email: data.email,
+      password: data.password,
+      fullName: data.name, // fixed: was data.password
+    })
+    console.log(`user created with id=${id}`)
   }
+
 
   return (
     <form
