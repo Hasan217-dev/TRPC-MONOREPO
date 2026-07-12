@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 const envSchema = z.object({
-  
+   
 });
 
 function createEnv(env: NodeJS.ProcessEnv) {

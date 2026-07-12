@@ -1,7 +1,8 @@
 import {db, eq} from "@repo/database"
+import * as JWT from "jsonwebtoken"
 import {usersTable} from "@repo/database/models/user"
 import {randomBytes , createHmac} from "node:crypto"
-import {CreateUserWithEmailAndPasswordInputType , createUserWithEmailAndPasswordInput}from "./model"
+import {CreateUserWithEmailAndPasswordInputType ,createUserWithEmailAndPasswordInput}from "./model"
 
 class userService {
 
@@ -10,6 +11,7 @@ class userService {
      if(!result || result.length === 0) return null
      return result[0]
     }
+    
 
     public async createUserWithEmailAndPassword(payload : CreateUserWithEmailAndPasswordInputType ){
          const {fullName , email , password} = await createUserWithEmailAndPasswordInput.parseAsync(payload)
