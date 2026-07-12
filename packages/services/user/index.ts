@@ -26,6 +26,7 @@ class userService {
          const userInsertResult = await db.insert(usersTable).values({fullName , email , password : hash , salt}).returning({
             id : usersTable.id
          });
+         
          if(!userInsertResult || userInsertResult.length === 0 || !userInsertResult[0]?.id) throw new Error(`something went wrong while creating the user`)
 
             return {
