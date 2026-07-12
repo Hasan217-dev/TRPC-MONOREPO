@@ -12,14 +12,17 @@ export const authRouter = router({
       path : getPath("/createUserWithEmailAndPassword") ,
       tags :  TAGS ,
     }}).input(createUserWithEmailAndPasswordInputModel).output(createUserWithEmailAndPasswordOutputModel)
-    .mutation(async ({input})=>{
+    .mutation(async ({input , ctx})=>{
         const {fullName , email , password} = input
-        const {id} = await userService.createUserWithEmailAndPassword({
+         
+        const {id , token} = await userService.createUserWithEmailAndPassword({
           fullName , email , password
-        })
+        });
+        
 
         return {
-          id
+          id,
+          
         }
         
     }) ,
