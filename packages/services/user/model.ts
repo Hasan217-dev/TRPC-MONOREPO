@@ -1,4 +1,4 @@
-import {z} from "zod"
+import {email, z} from "zod"
 
 export const createUserWithEmailAndPasswordInput = z.object({
     fullName : z.string().describe("Full Name of the user"),
@@ -14,3 +14,10 @@ export const generateUserTokenPayload = z.object({
 })
 
 export type GenerateUserTokenPayloadType = z.infer<typeof generateUserTokenPayload>
+
+export const signInUserWithEmailAndPasswordInput = z.object({
+    email : z.string().describe("Email of the user") ,
+    password : z.string().describe("Password of the user")
+})
+
+export type SignInUserWithEmailAndPasswordInputType = z.infer<typeof signInUserWithEmailAndPasswordInput>

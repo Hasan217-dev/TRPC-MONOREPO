@@ -7,7 +7,9 @@ import {
     CreateUserWithEmailAndPasswordInputType,
     GenerateUserTokenPayloadType,
     createUserWithEmailAndPasswordInput,
-    generateUserTokenPayload
+    generateUserTokenPayload,
+    signInUserWithEmailAndPasswordInput,
+    SignInUserWithEmailAndPasswordInputType,
 }from "./model"
 
 class userService {
@@ -49,6 +51,31 @@ class userService {
                 id : userId,
                 token
             }
+    }
+
+    public async signInUserWithEmailAndPassword(payload : SignInUserWithEmailAndPasswordInputType){
+        const {email , password} = await signInUserWithEmailAndPasswordInput.parseAsync(payload)
+        const existingUser = await this.getUserByEmail(email)
+        if(!existingUser){
+            throw new Error(`User with email ${email} does not exists`)
+        }
+
+        if(!existingUser.password || !existingUser.salt){
+            throw new Error(`Invalid authentication method`)
+        }
+
+        const hash = createHmac('sha256' , existingUser.salt).update(password).digest("hex")
+        if(hash !== existingUser.password){
+            throw new Error(`Invalid Email or Passowrd`)
+        }
+        
+        const {token} = await this.genrateUserToken({id : existingUser.id})
+
+        return {
+            token,
+            id : existingUser.id
+        }
+
     }
 }
 
