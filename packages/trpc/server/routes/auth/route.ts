@@ -1,13 +1,21 @@
 import { userService } from "../../services";
 import { publicProcedure, router } from "../../trpc";
-import { setAuthenticationCookie } from "../../utils/cookie";
+import { getAuthenticationCookie, setAuthenticationCookie } from "../../utils/cookie";
 import { generatePath } from "../../utils/path-generator";
-import {createUserWithEmailAndPasswordInputModel , createUserWithEmailAndPasswordOutputModel, signInUserWithEmailAndPasswordInputModel, signInUserWithEmailAndPasswordOutptModel} from "./model"
+import {
+  createUserWithEmailAndPasswordInputModel , createUserWithEmailAndPasswordOutputModel,
+  signInUserWithEmailAndPasswordInputModel,
+  getLoggedInUserInfoInputModel,
+  signInUserWithEmailAndPasswordOutptModel,
+  getLoggedInUserInfoOutputModel, 
+    
+  } from "./model"
 
 const TAGS = ["Authentication"];
 const getPath = generatePath("/authentication");
 
 export const authRouter = router({
+
     createUserWithEmailAndPassword : publicProcedure.meta({openapi : {
       method : 'POST' ,
       path : getPath("/createUserWithEmailAndPassword") ,
@@ -27,10 +35,11 @@ export const authRouter = router({
         }
     }) ,
 
-    signInUserWithEmailAndPassword : publicProcedure.meta({
+    signInUserWithEmailAndPassword : publicProcedure
+    .meta({
       openapi : {
         method : "POST" ,
-        path : getPath("signInUserWithEmailAndPasswordsignInUserWithEmailAndPassword"),
+        path : getPath("/signInUserWithEmailAndPassword"),
         tags : TAGS
       }
     })
@@ -47,6 +56,30 @@ export const authRouter = router({
       return {
         id
       }
+    }),
 
+    getLoggedInUserInfo : publicProcedure
+    .meta({
+      openapi : {
+        method : "GET" ,
+        path : getPath("/getLoggedInUserInfo"),
+        tags : TAGS
+      }
+    })
+    .input(getLoggedInUserInfoInputModel)
+    .output(getLoggedInUserInfoOutputModel)
+    .query(async ({
+      ctx
+    })=> {
+       const userToken = getAuthenticationCookie(ctx)
+        if(!userToken) throw new Error(`user is not logged in`)
+
+       const {id , email , fullName , profileImageUrl} = await userService.verifyAndDecodeUserToken(userToken)
+       return {
+        id , 
+        email, 
+        fullName,
+        profileImageUrl
+       }
     })
 });
