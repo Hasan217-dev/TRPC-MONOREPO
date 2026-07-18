@@ -1,5 +1,5 @@
 "use client"
-
+import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { cn } from "~/lib/utils"
 import { Button } from "~/components/ui/button"
@@ -18,7 +18,6 @@ import {
 } from "~/components/ui/field"
 import { Input } from "~/components/ui/input"
 import { useSignIn } from "~/hooks/api/auth"
-import { da } from "zod/v4/locales"
 
 type LoginFormValues = {
   email: string
@@ -31,7 +30,7 @@ export function LoginForm({
 }: React.ComponentProps<"div">) {
 
   const {signInUserWithEmailAndPasswordAsync} = useSignIn()
-
+  const router = useRouter()
   const {
     register,
     handleSubmit,
@@ -43,7 +42,8 @@ export function LoginForm({
    const {id} = await signInUserWithEmailAndPasswordAsync({
       email : data.email ,
       password : data.password
-    })
+    });
+    router.replace("/dashboard")
   }
 
   return (

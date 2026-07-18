@@ -1,5 +1,6 @@
 "use client"
 
+import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { cn } from "~/lib/utils"
 import { Button } from "~/components/ui/button"
@@ -24,7 +25,7 @@ type SignupFormValues = {
 export function SignupForm({ className, ...props }: React.ComponentProps<"form">) {
   
   const {createUserWithEmailAndPasswordAsync} = useSignup();
-
+  const router = useRouter()
   const {
     register,
     handleSubmit,
@@ -42,6 +43,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"form">
       fullName: data.name, // fixed: was data.password
     })
     console.log(`user created with id=${id}`)
+    router.replace("/dashboard")
   }
 
 
