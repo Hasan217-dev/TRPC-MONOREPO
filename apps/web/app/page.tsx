@@ -1,11 +1,25 @@
-import { api } from "~/trpc/server";
+"use client"
 
-export default async function Home() {
- const {message} = await api.chaiCode.query({email : "Hassan@gmail.com"})
+import { useEffect } from "react";
+import { useUser } from "~/hooks/api/auth";
+import { useRouter } from "next/navigation";
+
+export default function Home() {
+  const {user} = useUser()
+  const router = useRouter()
+
+  useEffect(()=>{
+    if(user && user.id){
+      router.replace("/dashboard")
+    } else {
+      router.replace("login")
+    }
+  } , [])
+
   return (
     <main className="min-h-screen min-w-screen flex justify-center items-center">
       <div>
-        <h2>Server Message: {message}</h2>
+        {JSON.stringify(user , null , 2)}
       </div>
     </main>
   );
