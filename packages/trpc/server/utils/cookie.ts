@@ -1,4 +1,5 @@
 import type { Response ,Request , CookieOptions} from 'express';
+import { TRPCContext } from '../context';
 
 
 const ONE_MINUTE = 60 * 1000;
@@ -25,15 +26,31 @@ export function createCookieFactory(res : Response) {
     }
 }
 
-
  export function getCookieFactory(req : Request) {
     return function getCookie(name : string) {
         return req.cookies?.[name];
     }
- }  
+}  
 
  export function clearCookieFactory(res : Response) {
     return function clearCookie(name : string){
        res.clearCookie(name);
     }
- }
+}
+
+//Authentication Cookie
+
+const AUTHENTICATION_COOKIE_NAME = "authentication-token"
+
+export function setAuthenticationCookie(ctx : TRPCContext , accessToken : string){
+    ctx.createCookie(AUTHENTICATION_COOKIE_NAME , accessToken)
+}
+
+export function getAuthenticationCookie(ctx : TRPCContext){
+   return ctx.getCookie(AUTHENTICATION_COOKIE_NAME)
+}
+
+export function clearAuthenticationCookie(ctx : TRPCContext){
+    ctx.clearCookie(AUTHENTICATION_COOKIE_NAME)
+}
+

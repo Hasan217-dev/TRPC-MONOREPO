@@ -1,5 +1,6 @@
 import { userService } from "../../services";
 import { publicProcedure, router } from "../../trpc";
+import { setAuthenticationCookie } from "../../utils/cookie";
 import { generatePath } from "../../utils/path-generator";
 import {createUserWithEmailAndPasswordInputModel , createUserWithEmailAndPasswordOutputModel} from "./model"
 
@@ -18,9 +19,10 @@ export const authRouter = router({
         const {id , token} = await userService.createUserWithEmailAndPassword({
           fullName , email , password
         });
-        
 
-        return {
+        setAuthenticationCookie(ctx , token)
+        
+         return {
           id,
           
         }

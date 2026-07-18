@@ -20,7 +20,7 @@ class userService {
 
     private async genrateUserToken(payload : GenerateUserTokenPayloadType){
         const {id} = await generateUserTokenPayload.parseAsync(payload)
-        const token = JWT.sign({id} , env.JWT_SECRET_KEY)
+        const token = JWT.sign({ id } , env.JWT_SECRET_KEY)
         return { token }
     }
 
