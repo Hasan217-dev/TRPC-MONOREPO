@@ -15,6 +15,13 @@
       "when": 1783314368385,
       "tag": "0001_lucky_piledriver",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1784554554964,
+      "tag": "0002_curved_dracula",
+      "breakpoints": true
     }
   ]
 }
