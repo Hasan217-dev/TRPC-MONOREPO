@@ -4,7 +4,9 @@ import { generatePath } from "../../utils/path-generator";
 import {
     createFormInputModel,
     createFormOutputModel,
+    listFormsOutputModel,
 } from "./model"
+import {z} from "zod"
 
 const TAGS = ["Form"];
 const getPath = generatePath("/form");
@@ -34,5 +36,23 @@ export const formRouter = router({
         return {
             id ,
         }
+    }) ,
+
+    listForms : authenticatedProcedure
+    .meta({
+        openapi : {
+            method : "GET" ,
+            path : getPath("/listForms") ,
+            tags : TAGS ,
+            protect : true
+        }
+    })
+    .input(z.undefined())
+    .output(listFormsOutputModel)
+    .query(async ({ ctx }) => {
+        const forms = formService.listFormsByUserId({
+            userId : ctx.user.id ,
+        })
+        return forms
     }) ,
 })
