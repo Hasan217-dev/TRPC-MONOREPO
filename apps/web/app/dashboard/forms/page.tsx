@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import * as React from "react"
 import { toast } from "sonner"
 
@@ -18,14 +19,23 @@ import { Input } from "~/components/ui/input"
 import { Label } from "~/components/ui/label"
 import { SiteHeader } from "~/components/site-header"
 import { SidebarInset, SidebarProvider } from "~/components/ui/sidebar"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "~/components/ui/table"
 import { Textarea } from "~/components/ui/textarea"
-import { useCreateForm } from "~/hooks/api/form"
+import { useCreateForm, useListForms } from "~/hooks/api/form"
 
 export default function FormsPage() {
   const [open, setOpen] = React.useState(false)
   const [title, setTitle] = React.useState("")
   const [description, setDescription] = React.useState("")
   const { createFormAsync, status } = useCreateForm()
+  const { forms, isLoading, refetch } = useListForms()
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -48,6 +58,7 @@ export default function FormsPage() {
       setTitle("")
       setDescription("")
       setOpen(false)
+      void refetch()
     } catch {
       toast.error("Failed to create the form. Please try again.")
     }
@@ -125,6 +136,59 @@ export default function FormsPage() {
                     </form>
                   </DialogContent>
                 </Dialog>
+              </div>
+
+              <div className="rounded-lg border bg-card">
+                {isLoading ? (
+                  <div className="p-6 text-sm text-muted-foreground">
+                    Loading your forms...
+                  </div>
+                ) : (forms?.length ?? 0) === 0 ? (
+                  <div className="p-6 text-sm text-muted-foreground">
+                    You have no forms yet. Create one to get started.
+                  </div>
+                ) : (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Title</TableHead>
+                        <TableHead>Description</TableHead>
+                        <TableHead>Created</TableHead>
+                        <TableHead className="w-24 text-right">Action</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {(forms ?? []).map((form) => (
+                        <TableRow key={form.id}>
+                          <TableCell className="font-medium">
+                            <Link
+                              href={`/dashboard/forms/${form.id}`}
+                              className="text-foreground hover:underline"
+                            >
+                              {form.title}
+                            </Link>
+                          </TableCell>
+                          <TableCell className="max-w-xs truncate text-muted-foreground">
+                            {form.description ?? "—"}
+                          </TableCell>
+                          <TableCell className="text-muted-foreground">
+                            {form.createdAt
+                              ? new Date(form.createdAt).toLocaleDateString()
+                              : "—"}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <Link
+                              href={`/dashboard/forms/${form.id}`}
+                              className="text-sm font-medium text-primary hover:underline"
+                            >
+                              Edit
+                            </Link>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                )}
               </div>
             </div>
           </div>
