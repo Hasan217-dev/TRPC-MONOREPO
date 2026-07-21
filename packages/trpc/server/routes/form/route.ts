@@ -17,6 +17,7 @@ export const formRouter = router({
             method : "POST" ,
             path : getPath("/createForm") ,
             tags : TAGS ,
+            protect : true
         }
     })
     .input(createFormInputModel)
