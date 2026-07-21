@@ -1,3 +1,4 @@
+import { tr } from "zod/v4/locales";
 import { userService } from "../../services";
 import { authenticatedProcedure, publicProcedure, router } from "../../trpc";
 import { getAuthenticationCookie, setAuthenticationCookie } from "../../utils/cookie";
@@ -63,7 +64,8 @@ export const authRouter = router({
       openapi : {
         method : "GET" ,
         path : getPath("/getLoggedInUserInfo"),
-        tags : TAGS
+        tags : TAGS,
+        protect : true
       }
     })
     .input(getLoggedInUserInfoInputModel)
