@@ -10,7 +10,7 @@ CREATE TABLE "form_fields" (
 	"type" "field_type_enum" NOT NULL,
 	"form_Id" uuid,
 	"created_at" timestamp DEFAULT now(),
-	"updated_at" timestamp,
+	"updated_at" timestamp DEFAULT now(),
 	CONSTRAINT "form_fields_form_Id_index_unique" UNIQUE("form_Id","index")
 );
 --> statement-breakpoint

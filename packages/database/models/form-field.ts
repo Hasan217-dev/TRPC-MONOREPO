@@ -33,7 +33,7 @@ export const formFieldsTable = pgTable("form_fields" , {
     formId : uuid('form_Id').references(() => formsTable.id ),
 
     createdAt: timestamp("created_at").defaultNow(),
-    updatedAt: timestamp("updated_at").$onUpdate(() => new Date()),
+    updatedAt: timestamp("updated_at").defaultNow().$onUpdate(() => new Date()),
 }, (table)=>{
     return {
         uniqueFormIdAndIndex : unique().on(table.formId , table.index)

@@ -21,32 +21,40 @@ class formFiledService {
             .replace(/-+/g, "-")
     }
 
-    public async createFiled(payload: CreateFiledInputType) {
-        const parsedPayload = await createFiledInput.parseAsync(payload)
+   public async createFiled(payload: CreateFiledInputType) {
+    const parsedPayload = await createFiledInput.parseAsync(payload)
 
-        const { label, description, placeholder, isRequired, index, type, formId } = parsedPayload
+    const { label, description, placeholder, isRequired, type, formId } = parsedPayload
 
-        const result = await db.insert(formFieldsTable).values({
-            label,
-            labelKey: this.slugifyLabel(label),
-            description,
-            placeholder,
-            isRequired,
-            index: index.toString(),
-            type,
-            formId,
-        }).returning({
-            id: formFieldsTable.id,
-        })
+    // Calculate next index server-side to avoid collisions
+    const existingFields = await db
+        .select({ id: formFieldsTable.id })
+        .from(formFieldsTable)
+        .where(eq(formFieldsTable.formId, formId))
 
-        if (!result || result.length === 0 || !result[0]?.id) {
-            throw new Error("Something went wrong while creating the field")
-        }
+    const nextIndex = existingFields.length + 1
 
-        return {
-            id: result[0].id,
-        }
+    const result = await db.insert(formFieldsTable).values({
+        label,
+        labelKey: this.slugifyLabel(label),
+        description,
+        placeholder,
+        isRequired,
+        index: nextIndex.toString(),
+        type,
+        formId,
+    }).returning({
+        id: formFieldsTable.id,
+    })
+
+    if (!result || result.length === 0 || !result[0]?.id) {
+        throw new Error("Something went wrong while creating the field")
     }
+
+    return {
+        id: result[0].id,
+    }
+}
 
     public async getFiled(payload: GetFiledInputType) {
         const { id } = await getFiledInput.parseAsync(payload)
@@ -72,6 +80,7 @@ class formFiledService {
             isRequired?: boolean
             index?: string
             type?: "TEXT" | "NUMBER" | "YES_NO" | "EMAIL" | "PASSWORD"
+            updatedAt?: Date
         } = {}
 
         if (fieldPayload.label !== undefined) updateData.label = fieldPayload.label
@@ -80,6 +89,8 @@ class formFiledService {
         if (fieldPayload.isRequired !== undefined) updateData.isRequired = fieldPayload.isRequired
         if (fieldPayload.index !== undefined) updateData.index = fieldPayload.index.toString()
         if (fieldPayload.type !== undefined) updateData.type = fieldPayload.type
+
+        updateData.updatedAt = new Date()
 
         const result = await db.update(formFieldsTable)
             .set(updateData)
