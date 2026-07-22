@@ -36,6 +36,14 @@ export default function FormBuilderPage() {
     })
 
     setFieldId(result.id)
+
+       // Reset the form after successful creation
+    setLabel("")
+    setDescription("")
+    setPlaceholder("")
+    setIsRequired(false)
+    setIndex(1)
+    setType("TEXT")
   }
 
   const handleUpdateField = async () => {
