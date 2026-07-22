@@ -1,10 +1,18 @@
-import { formService } from "../../services";
+import { formFiledService, formService } from "../../services";
 import { authenticatedProcedure, router } from "../../trpc";
 import { generatePath } from "../../utils/path-generator";
 import {
+    createFiledInputModel,
+    createFiledOutputModel,
     createFormInputModel,
     createFormOutputModel,
+    deleteFiledInputModel,
+    deleteFiledOutputModel,
+    getFiledInputModel,
+    getFiledOutputModel,
     listFormsOutputModel,
+    updateFiledInputModel,
+    updateFiledOutputModel,
 } from "./model"
 import {z} from "zod"
 
@@ -54,5 +62,79 @@ export const formRouter = router({
             userId : ctx.user.id ,
         })
         return forms
+    }) ,
+
+    createFiled : authenticatedProcedure
+    .meta({
+        openapi : {
+            method : "POST" ,
+            path : getPath("/createFiled") ,
+            tags : TAGS ,
+            protect : true
+        }
+    })
+    .input(createFiledInputModel)
+    .output(createFiledOutputModel)
+    .mutation(async ({ input }) => {
+        const { id } = await formFiledService.createFiled(input)
+
+        return {
+            id ,
+        }
+    }) ,
+
+    getFiled : authenticatedProcedure
+    .meta({
+        openapi : {
+            method : "GET" ,
+            path : getPath("/getFiled") ,
+            tags : TAGS ,
+            protect : true
+        }
+    })
+    .input(getFiledInputModel)
+    .output(getFiledOutputModel)
+    .query(async ({ input }) => {
+        const result = await formFiledService.getFiled(input)
+
+        return result
+    }) ,
+
+    updateFiled : authenticatedProcedure
+    .meta({
+        openapi : {
+            method : "PATCH" ,
+            path : getPath("/updateFiled") ,
+            tags : TAGS ,
+            protect : true
+        }
+    })
+    .input(updateFiledInputModel)
+    .output(updateFiledOutputModel)
+    .mutation(async ({ input }) => {
+        const { id } = await formFiledService.updateFiled(input)
+
+        return {
+            id ,
+        }
+    }) ,
+
+    deleteFiled : authenticatedProcedure
+    .meta({
+        openapi : {
+            method : "DELETE" ,
+            path : getPath("/deleteFiled") ,
+            tags : TAGS ,
+            protect : true
+        }
+    })
+    .input(deleteFiledInputModel)
+    .output(deleteFiledOutputModel)
+    .mutation(async ({ input }) => {
+        const { id } = await formFiledService.deleteFiled(input)
+
+        return {
+            id ,
+        }
     }) ,
 })
