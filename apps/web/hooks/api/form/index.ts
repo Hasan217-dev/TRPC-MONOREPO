@@ -147,3 +147,31 @@ export const useDeleteFiled = () => {
         status,
     }
 }
+
+export const useListFileds = (formId: string) => {
+    const {
+        data: fields,
+        error,
+        isError,
+        isLoading,
+        isPending,
+        refetch,
+        status,
+    } = trpc.form.listFileds.useQuery(
+        { formId },
+        {
+            enabled: Boolean(formId),
+            retry: false,
+        },
+    )
+
+    return {
+        fields,
+        error,
+        isError,
+        isLoading,
+        isPending,
+        refetch,
+        status,
+    }
+}

@@ -1,4 +1,5 @@
-import { db, eq } from "@repo/database"
+import { db, eq , asc} from "@repo/database"
+
 import { formFieldsTable } from "@repo/database/models/form-field"
 import {
     CreateFiledInputType,
@@ -125,6 +126,18 @@ class formFiledService {
             id: result[0].id,
         }
     }
+
+    public async listFiledsByFormId(payload: { formId: string }) {
+    const { formId } = payload
+
+    const result = await db
+        .select()
+        .from(formFieldsTable)
+        .where(eq(formFieldsTable.formId, formId))
+        .orderBy(asc(formFieldsTable.index))
+
+    return result
+}
 }
 
 export default formFiledService

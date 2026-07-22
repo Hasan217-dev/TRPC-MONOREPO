@@ -75,3 +75,23 @@ export const deleteFiledInputModel = z.object({
 export const deleteFiledOutputModel = z.object({
     id : z.string().describe("id of the field deleted"),
 })
+
+export const listFiledsInputModel = z.object({
+    formId : z.uuid().describe("Form ID to list fields for"),
+})
+
+export const listFiledsOutputModel = z.array(
+    z.object({
+        id : z.string().describe("id of the field"),
+        label : z.string().describe("Human readable field label"),
+        labelKey : z.string().describe("Stable slug key for the field"),
+        description : z.string().nullable().optional().describe("Optional field description"),
+        placeholder : z.string().nullable().optional().describe("Optional placeholder text"),
+        isRequired : z.boolean().describe("Whether the field is required"),
+        index : z.string().describe("Fractional sort index for field ordering"),
+        type : z.enum(fieldTypeValues).describe("Field type"),
+        formId : z.string().nullable().optional().describe("Form ID this field belongs to"),
+        createdAt : z.date().nullable().optional().describe("date when the field was created"),
+        updatedAt : z.date().nullable().optional().describe("date when the field was last updated"),
+    })
+)

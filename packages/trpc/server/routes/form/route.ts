@@ -13,6 +13,8 @@ import {
     listFormsOutputModel,
     updateFiledInputModel,
     updateFiledOutputModel,
+    listFiledsInputModel,  
+    listFiledsOutputModel, 
 } from "./model"
 import {z} from "zod"
 
@@ -136,5 +138,21 @@ export const formRouter = router({
         return {
             id ,
         }
+    }) ,
+
+    listFileds : authenticatedProcedure
+    .meta({
+        openapi : {
+            method : "GET" ,
+            path : getPath("/listFileds") ,
+            tags : TAGS ,
+            protect : true
+        }
+    })
+    .input(listFiledsInputModel)
+    .output(listFiledsOutputModel)
+    .query(async ({ input }) => {
+        const result = await formFiledService.listFiledsByFormId(input)
+        return result
     }) ,
 })
