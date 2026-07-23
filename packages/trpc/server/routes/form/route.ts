@@ -1,5 +1,5 @@
 import { formFiledService, formService } from "../../services";
-import { authenticatedProcedure, router } from "../../trpc";
+import { authenticatedProcedure, publicProcedure, router } from "../../trpc";
 import { generatePath } from "../../utils/path-generator";
 import {
     createFiledInputModel,
@@ -10,6 +10,8 @@ import {
     deleteFiledOutputModel,
     getFiledInputModel,
     getFiledOutputModel,
+    getFormInputModel,
+    getFormOutputModel,
     listFormsOutputModel,
     updateFiledInputModel,
     updateFiledOutputModel,
@@ -46,6 +48,20 @@ export const formRouter = router({
         return {
             id ,
         }
+    }) ,
+
+    getFormById : publicProcedure
+    .meta({
+        openapi : {
+            method : "GET" ,
+            path : getPath("/getFormById") ,
+            tags : TAGS,
+        }
+    })
+    .input(getFormInputModel)
+    .output(getFormOutputModel)
+    .query(async ({ input }) => {
+        return await formService.getFormById(input)
     }) ,
 
     listForms : authenticatedProcedure
