@@ -11,19 +11,6 @@ export const createFormOutputModel = z.object({
     id : z.string().describe("id of the form created"),
 })
 
-export const getFormInputModel = z.object({
-    id : z.uuid().describe("Form ID"),
-})
-
-export const getFormOutputModel = z.object({
-    id : z.string().describe("id of the form"),
-    title : z.string().describe("title of the form"),
-    description : z.string().nullable().describe("description of the form"),
-    createdBy : z.string().nullable().describe("id of the user who created the form"),
-    createdAt : z.date().nullable().describe("date when the form was created"),
-    updatedAt : z.date().nullable().describe("date when the form was last updated"),
-})
-
 export const listFormsOutputModel = z.array(
     z.object({
         id : z.string().describe("id of the form"),
