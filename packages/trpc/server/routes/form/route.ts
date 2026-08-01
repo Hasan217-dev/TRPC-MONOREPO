@@ -1,4 +1,4 @@
-import { formFiledService, formService } from "../../services";
+import { formFiledService, formService, formSubmissionService } from "../../services";
 import { authenticatedProcedure, publicProcedure, router } from "../../trpc";
 import { generatePath } from "../../utils/path-generator";
 import {
@@ -19,6 +19,8 @@ import {
     listFiledsOutputModel, 
     submitFormInputModel,
     submitFormOutputModel,
+    getFormSubmissionsInputModel,
+    getFormSubmissionsOutputModel,
 } from "./model"
 import {z} from "zod"
 
@@ -95,7 +97,24 @@ export const formRouter = router({
     .input(submitFormInputModel)
     .output(submitFormOutputModel)
     .mutation(async ({ input }) => {
-        return formService.submitForm(input)
+        return formSubmissionService.submitForm(input)
+    }) ,
+
+    getFormSubmissions : authenticatedProcedure
+    .meta({
+        openapi : {
+            method : "GET" ,
+            path : getPath("/getFormSubmissions") ,
+            tags : TAGS ,
+            protect : true
+        }
+    })
+    .input(getFormSubmissionsInputModel)
+    .output(getFormSubmissionsOutputModel)
+    .query(async ({ input, ctx }) => {
+        const submissions = await formSubmissionService.getFormSubmissions(input)
+
+        return submissions.filter((submission) => submission.formId === input.formId)
     }) ,
 
     createFiled : authenticatedProcedure

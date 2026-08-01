@@ -227,3 +227,31 @@ export const useListFileds = (formId: string) => {
         status,
     }
 }
+
+export const useGetFormSubmissions = (formId: string) => {
+    const {
+        data: submissions,
+        error,
+        isError,
+        isLoading,
+        isPending,
+        refetch,
+        status,
+    } = trpc.form.getFormSubmissions.useQuery(
+        { formId },
+        {
+            enabled: Boolean(formId),
+            retry: false,
+        },
+    )
+
+    return {
+        submissions,
+        error,
+        isError,
+        isLoading,
+        isPending,
+        refetch,
+        status,
+    }
+}
