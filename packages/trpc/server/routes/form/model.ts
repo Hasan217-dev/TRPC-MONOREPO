@@ -50,6 +50,20 @@ export const getFormOutputModel = z.object({
     fields : z.array(formFieldOutputModel).default([]).describe("Fields belonging to the form"),
 })
 
+export const submitFormInputModel = z.object({
+    formId : z.uuid().describe("Form ID receiving the public submission"),
+    values : z.array(
+        z.object({
+            formFiledId : z.string().describe("id of the field being answered"),
+            value : z.string().describe("answer value for the field"),
+        })
+    ).default([]).describe("submission values for the form fields"),
+})
+
+export const submitFormOutputModel = z.object({
+    id : z.string().describe("id of the form submission created"),
+})
+
 export const createFiledInputModel = z.object({
     label : z.string().min(1).max(100).describe("Human readable field label"),
     description : z.string().max(5000).optional().describe("Optional field description"),

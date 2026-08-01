@@ -17,6 +17,8 @@ import {
     updateFiledOutputModel,
     listFiledsInputModel,  
     listFiledsOutputModel, 
+    submitFormInputModel,
+    submitFormOutputModel,
 } from "./model"
 import {z} from "zod"
 
@@ -80,6 +82,20 @@ export const formRouter = router({
     .output(getFormOutputModel)
     .query(async ({ input }) => {
         return formService.getFormById(input)
+    }) ,
+
+    submitForm : publicProcedure
+    .meta({
+        openapi : {
+            method : "POST" ,
+            path : getPath("/submitForm") ,
+            tags : TAGS ,
+        }
+    })
+    .input(submitFormInputModel)
+    .output(submitFormOutputModel)
+    .mutation(async ({ input }) => {
+        return formService.submitForm(input)
     }) ,
 
     createFiled : authenticatedProcedure

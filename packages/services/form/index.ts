@@ -1,13 +1,16 @@
 import { asc, db, desc, eq } from "@repo/database"
 import { formsTable } from "@repo/database/models/form"
 import { formFieldsTable } from "@repo/database/models/form-field"
+import { formSubmissonTable } from "@repo/database/models/form-submisson"
 import {
     CreateFormInputType,
     GetFormByIdInputType,
     ListFormsByUserIdInputType,
+    SubmitFormInputType,
     createFormInput,
     getFormByIdInput,
     listFormsByUserIdInput,
+    submitFormInput,
 } from "./model"
 
 class formService {
@@ -105,6 +108,25 @@ class formService {
             createdAt : firstRow.createdAt,
             updatedAt : firstRow.updatedAt,
             fields,
+        }
+    }
+
+    public async submitForm(payload : SubmitFormInputType){
+        const { formId, values } = await submitFormInput.parseAsync(payload)
+
+        const result = await db.insert(formSubmissonTable).values({
+            formId,
+            values,
+        }).returning({
+            id : formSubmissonTable.id,
+        })
+
+        if(!result || result.length === 0 || !result[0]?.id){
+            throw new Error("something went wrong while submitting the form")
+        }
+
+        return {
+            id : result[0].id,
         }
     }
 }

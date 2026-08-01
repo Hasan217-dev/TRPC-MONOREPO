@@ -1,5 +1,29 @@
 import { trpc } from "~/trpc/client"
 
+export const useSubmitForm = () => {
+    const {
+        mutateAsync: submitFormAsync,
+        mutate: submitForm,
+        error,
+        failureCount,
+        isError,
+        isIdle,
+        isSuccess,
+        status,
+    } = trpc.form.submitForm.useMutation()
+
+    return {
+        submitFormAsync,
+        submitForm,
+        error,
+        failureCount,
+        isError,
+        isIdle,
+        isSuccess,
+        status,
+    }
+}
+
 export const useGetFormById = (id: string) => {
     const {
         data: form,
