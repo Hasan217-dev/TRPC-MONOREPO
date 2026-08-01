@@ -22,6 +22,34 @@ export const listFormsOutputModel = z.array(
     })
 )
 
+export const getFormInputModel = z.object({
+    id : z.uuid().describe("Form ID to fetch"),
+})
+
+const formFieldOutputModel = z.object({
+    id : z.string().describe("id of the field"),
+    label : z.string().describe("Human readable field label"),
+    labelKey : z.string().describe("Stable slug key for the field"),
+    description : z.string().nullable().optional().describe("Optional field description"),
+    placeholder : z.string().nullable().optional().describe("Optional placeholder text"),
+    isRequired : z.boolean().describe("Whether the field is required"),
+    index : z.string().describe("Fractional sort index for field ordering"),
+    type : z.enum(fieldTypeValues).describe("Field type"),
+    formId : z.string().nullable().optional().describe("Form ID this field belongs to"),
+    createdAt : z.date().nullable().optional().describe("date when the field was created"),
+    updatedAt : z.date().nullable().optional().describe("date when the field was last updated"),
+})
+
+export const getFormOutputModel = z.object({
+    id : z.string().describe("id of the form"),
+    title : z.string().describe("title of the form"),
+    description : z.string().nullable().describe("description of the form"),
+    createdBy : z.string().nullable().describe("id of the user who created the form"),
+    createdAt : z.date().nullable().describe("date when the form was created"),
+    updatedAt : z.date().nullable().describe("date when the form was last updated"),
+    fields : z.array(formFieldOutputModel).default([]).describe("Fields belonging to the form"),
+})
+
 export const createFiledInputModel = z.object({
     label : z.string().min(1).max(100).describe("Human readable field label"),
     description : z.string().max(5000).optional().describe("Optional field description"),
