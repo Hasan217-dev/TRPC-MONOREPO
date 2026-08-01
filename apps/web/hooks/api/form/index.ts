@@ -1,5 +1,33 @@
 import { trpc } from "~/trpc/client"
 
+export const useGetFormById = (id: string) => {
+    const {
+        data: form,
+        error,
+        isError,
+        isLoading,
+        isPending,
+        refetch,
+        status,
+    } = trpc.form.getFormById.useQuery(
+        { id },
+        {
+            enabled: Boolean(id),
+            retry: false,
+        },
+    )
+
+    return {
+        form,
+        error,
+        isError,
+        isLoading,
+        isPending,
+        refetch,
+        status,
+    }
+}
+
 export const useCreateForm = () => {
     const {
         mutateAsync: createFormAsync,
