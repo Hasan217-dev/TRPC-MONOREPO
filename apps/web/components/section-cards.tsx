@@ -1,3 +1,6 @@
+"use client"
+
+import { useMemo } from "react"
 import { IconTrendingDown, IconTrendingUp } from "@tabler/icons-react"
 
 import { Badge } from "~/components/ui/badge"
@@ -9,8 +12,31 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card"
+import { useListForms, useGetFormSubmissions } from "~/hooks/api/form"
+
+type SubmissionSummary = {
+  id: string
+  formId: string | null
+  values?: Array<{ formFiledId: string; value: string }> | null
+  createdAt?: string | null
+}
 
 export function SectionCards() {
+  const { forms } = useListForms()
+
+  const submissionQueries = (forms ?? []).map((form) => useGetFormSubmissions(form.id))
+
+  const submissions = useMemo(() => {
+    return submissionQueries
+      .flatMap((query) => (query.submissions ?? []) as SubmissionSummary[])
+      .sort((a, b) => {
+        const aTime = a.createdAt ? new Date(a.createdAt).getTime() : 0
+        const bTime = b.createdAt ? new Date(b.createdAt).getTime() : 0
+        return bTime - aTime
+      })
+      .slice(0, 4)
+  }, [submissionQueries])
+
   return (
     <div className="grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4 dark:*:data-[slot=card]:bg-card">
       <Card className="@container/card">
@@ -79,22 +105,26 @@ export function SectionCards() {
       </Card>
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>Growth Rate</CardDescription>
+          <CardDescription>Recent submissions</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            4.5%
+            {submissions.length}
           </CardTitle>
           <CardAction>
             <Badge variant="outline">
               <IconTrendingUp />
-              +4.5%
+              Live
             </Badge>
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Steady performance increase <IconTrendingUp className="size-4" />
+            Latest responses from your forms
           </div>
-          <div className="text-muted-foreground">Meets growth projections</div>
+          <div className="text-muted-foreground">
+            {submissions.length > 0
+              ? `${submissions[0]?.values?.length ?? 0} answers captured in the latest submission`
+              : "No submissions yet"}
+          </div>
         </CardFooter>
       </Card>
     </div>

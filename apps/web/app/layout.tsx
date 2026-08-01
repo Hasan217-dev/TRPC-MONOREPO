@@ -24,12 +24,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <GlobalProviders>
-        <TooltipProvider>
-        {children}
-        </TooltipProvider>
+          <TooltipProvider>{children}</TooltipProvider>
         </GlobalProviders>
       </body>
     </html>
