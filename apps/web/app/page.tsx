@@ -3,7 +3,8 @@
 import { useEffect, useMemo } from "react"
 import { useRouter } from "next/navigation"
 import { useUser } from "~/hooks/api/auth"
-import { useListForms, useGetFormSubmissions } from "~/hooks/api/form"
+import { useListForms } from "~/hooks/api/form"
+import { trpc } from "~/trpc/client"
 
 type SubmissionSummary = {
   id: string
@@ -19,7 +20,9 @@ export default function Home() {
 
   const formIds = useMemo(() => (forms ?? []).map((form) => form.id), [forms])
 
-  const submissionQueries = formIds.map((formId) => useGetFormSubmissions(formId))
+  const submissionQueries = trpc.useQueries((t) =>
+    formIds.map((formId) => t.form.getFormSubmissions({ formId })),
+  )
 
   useEffect(() => {
     if (user && user.id) {
@@ -31,8 +34,8 @@ export default function Home() {
 
   const submissions = useMemo(() => {
     return submissionQueries
-      .flatMap((query) => (query.submissions ?? []) as SubmissionSummary[])
-      .sort((a, b) => {
+      .flatMap((query) => (query.data ?? []) as SubmissionSummary[])
+      .sort((a: SubmissionSummary, b: SubmissionSummary) => {
         const aTime = a.createdAt ? new Date(a.createdAt).getTime() : 0
         const bTime = b.createdAt ? new Date(b.createdAt).getTime() : 0
         return bTime - aTime
