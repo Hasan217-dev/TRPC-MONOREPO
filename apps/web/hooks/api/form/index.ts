@@ -8,6 +8,7 @@ export const useSubmitForm = () => {
         failureCount,
         isError,
         isIdle,
+        isPending,
         isSuccess,
         status,
     } = trpc.form.submitForm.useMutation()
@@ -19,6 +20,7 @@ export const useSubmitForm = () => {
         failureCount,
         isError,
         isIdle,
+        isPending,
         isSuccess,
         status,
     }
