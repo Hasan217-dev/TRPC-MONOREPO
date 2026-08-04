@@ -132,7 +132,7 @@ export default function FormBuilderPage() {
           {/* Top Header Controls */}
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between pb-4 border-b border-border/60">
             <div>
-              <h2 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text">Form Builder</h2>
+              <h2 className="text-2xl font-bold tracking-tight bg-linear-to-r from-foreground to-foreground/80 bg-clip-text">Form Builder</h2>
               <p className="text-xs font-mono text-muted-foreground mt-1">
                 ID: {formId}
               </p>
