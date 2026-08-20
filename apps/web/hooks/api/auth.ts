@@ -25,3 +25,29 @@ export function useSignup(){
         status
     }
 }
+
+export function useSignIn(){
+    const {
+        mutateAsync : signInUserWithEmailAndPasswordAsync,
+        mutate : signInUserWithEmailAndPassword,
+        error,
+        failureCount,
+        isError,
+        isIdle,
+        isSuccess,
+        isPending,
+        status
+    } = trpc.auth.signInUserWithEmailAndPassword.useMutation()
+
+    return {
+        signInUserWithEmailAndPasswordAsync,
+        signInUserWithEmailAndPassword, 
+        error,
+        failureCount,
+        isError,
+        isIdle,
+        isSuccess,
+        isPending,
+        status
+    }
+}

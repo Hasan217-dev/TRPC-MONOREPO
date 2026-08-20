@@ -3,6 +3,8 @@ import {
     type CreateUserWithEmailAndPasswordType,
     generateUserTokenPayload ,
     type GenerateUserTokenPayloadType,
+    signInUserWithEmailAndPassword,
+    type SignInUserWithEmailAndPasswordType
      } from "./model";
 import { db, eq } from "@repo/database";
 import { userTable } from "@repo/database/models/user";
@@ -54,6 +56,27 @@ export default class userService {
         id : result[0].id,
         token
        }
+    }
+
+    public async signInUserWithEmailAndPassword(payload: SignInUserWithEmailAndPasswordType){
+      const {email , password} =  await signInUserWithEmailAndPassword.parseAsync(payload)
+
+      const existingUser = await this.getUserByEmail(email);
+      if(!existingUser) throw new Error("User with this email does not exist");
+
+      if(!existingUser.passwordHash){
+        throw new Error("Invalid Authentication method");
+      }
+
+      const isValid = await bcrypt.compare(password , existingUser.passwordHash)
+      if(!isValid) throw new Error("Invalid email address or password");
+
+      const {token} = await this.generateUserToken({id : existingUser.id})
+
+      return {
+        id : existingUser.id,
+        token
+      }
     }
     
 }
