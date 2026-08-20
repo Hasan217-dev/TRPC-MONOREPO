@@ -426,6 +426,9 @@ importers:
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
+      '@types/express':
+        specifier: ^5.0.6
+        version: 5.0.6
       dotenv-cli:
         specifier: ^11.0.0
         version: 11.0.0
