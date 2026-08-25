@@ -66,4 +66,4 @@ export const authRouter = router({
             id
         }
     })
-})
+});

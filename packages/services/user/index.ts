@@ -6,6 +6,7 @@ import {
     signInUserWithEmailAndPassword,
     type SignInUserWithEmailAndPasswordType
      } from "./model";
+
 import { db, eq } from "@repo/database";
 import { userTable } from "@repo/database/models/user";
 
@@ -78,5 +79,4 @@ export default class userService {
         token
       }
     }
-    
 }
