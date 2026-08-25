@@ -13,6 +13,7 @@ import { userTable } from "@repo/database/models/user";
 import bcrypt from "bcryptjs"
 import * as JWT from "jsonwebtoken"
 import {env} from "../env"
+import { email } from "zod";
 
 export default class userService {
 
@@ -78,5 +79,28 @@ export default class userService {
         id : existingUser.id,
         token
       }
+    }
+
+    public async getUserInfoById(id : string){
+        const user = await db
+        .select({id : userTable.id , fullName : userTable.fullName , email : userTable.email})
+         .from(userTable)
+         .where(eq(userTable.id , id));
+
+         if(!user || user.length === 0){
+            throw new Error("User with this id does not exists")
+         }
+
+         return user[0]!;
+    }
+
+    public async verifyAndDecodeUserToken(token:string){
+       try {
+         const result = JWT.verify(token , env.JWT_SECRET) as GenerateUserTokenPayloadType
+
+         return result
+       } catch (error) {
+          throw new Error("Invalid Token")
+       }
     }
 }
