@@ -1,9 +1,11 @@
-import {publicProcedure , router} from "../../trpc"
+import {authenticatedProcedure, publicProcedure , router} from "../../trpc"
 import {
     createUserWithEmailAndPasswordInputModel , 
     createUserWithEmailAndPasswordOutputModel,
     signInUserWithEmailAndPasswordInputModel ,
-    signInUserWithEmailAndPasswordOutputModel
+    signInUserWithEmailAndPasswordOutputModel,
+    getLoggedInUserInfoInputModel ,
+    getLoggedInUserInfoOutputModel
     
 } from "./model"
 import { userService } from "../../services"
@@ -65,5 +67,25 @@ export const authRouter = router({
         return {
             id
         }
+    }),
+
+    getLoggedInUserInfo : authenticatedProcedure
+    .meta({
+       openapi : {
+        method : "POST" ,
+        path : getPath("/getLoggedInUserInfo"),
+        tags : TAGS
+       }, 
+    })
+    .input(getLoggedInUserInfoInputModel)
+    .output(getLoggedInUserInfoOutputModel)
+    .query(async ({ctx})=>{
+      const {fullName , email , id} =  await userService.getUserInfoById(ctx.user.id)
+
+      return {
+        fullName ,
+        email ,
+        id
+      }
     })
 });
